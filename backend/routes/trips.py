@@ -74,3 +74,38 @@ async def get_trip(trip_id: str):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.put("/trips/{trip_id}", response_model=TripResponse)
+async def update_trip(trip_id: str, trip_update: TripCreate):
+    """Update an existing trip"""
+    try:
+        supabase = SupabaseService()
+        
+        # First check if trip exists
+        existing_trip = await supabase.get_trip(trip_id)
+        if not existing_trip:
+            raise HTTPException(status_code=404, detail="Trip not found")
+        
+        # Prepare update data
+        trip_data = {
+            "origin": trip_update.origin,
+            "origin_timezone": trip_update.origin_timezone,
+            "destination": trip_update.destination,
+            "destination_timezone": trip_update.destination_timezone,
+            "departure_utc": trip_update.departure_utc.isoformat(),
+            "arrival_utc": trip_update.arrival_utc.isoformat(),
+            "flight_duration_minutes": trip_update.flight_duration_minutes,
+            "layovers": [layover.dict() for layover in trip_update.layovers]
+        }
+        
+        # Update the trip
+        result = await supabase.update_trip(trip_id, trip_data)
+        if not result:
+            raise HTTPException(status_code=500, detail="Failed to update trip")
+        
+        return TripResponse(**result)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

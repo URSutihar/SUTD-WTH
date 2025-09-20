@@ -51,8 +51,20 @@ class ApiClient {
     return this.request(`/api/v1/trips?user_id=${userId}`)
   }
 
+  // Unified plans method
+  async getAllPlans(userId) {
+    return this.request(`/api/v1/plans/all?user_id=${userId}`)
+  }
+
   async getTrip(tripId) {
     return this.request(`/api/v1/trips/${tripId}`)
+  }
+
+  async updateTrip(tripId, tripData) {
+    return this.request(`/api/v1/trips/${tripId}`, {
+      method: 'PUT',
+      body: JSON.stringify(tripData),
+    })
   }
 
   // Plan generation
@@ -78,6 +90,38 @@ class ApiClient {
 
   async getWeatherByCity(city) {
     return this.request(`/api/v1/weather?q=${city}`)
+  }
+
+  // Shift Work Plans
+  async generateShiftWorkPlan(planData) {
+    return this.request('/api/v1/shift-work/generate-plan', {
+      method: 'POST',
+      body: JSON.stringify(planData),
+    })
+  }
+
+  async getShiftWorkPlans(userId) {
+    return this.request(`/api/v1/shift-work/plans?user_id=${userId}`)
+  }
+
+  async getShiftWorkPlan(planId) {
+    return this.request(`/api/v1/shift-work/plans/${planId}`)
+  }
+
+  // Sleep Schedule Plans
+  async generateSleepSchedulePlan(planData) {
+    return this.request('/api/v1/sleep-schedule/generate-plan', {
+      method: 'POST',
+      body: JSON.stringify(planData),
+    })
+  }
+
+  async getSleepSchedulePlans(userId) {
+    return this.request(`/api/v1/sleep-schedule/plans?user_id=${userId}`)
+  }
+
+  async getSleepSchedulePlan(planId) {
+    return this.request(`/api/v1/sleep-schedule/plans/${planId}`)
   }
 
   // Health check

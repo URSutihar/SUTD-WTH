@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { apiClient } from '../lib/api'
 import { timezones } from '../utils/timezones'
@@ -7,12 +7,15 @@ import { timezones } from '../utils/timezones'
 export const TripLanding = () => {
   const { user } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const [loading, setLoading] = useState(false)
   const [lookupLoading, setLookupLoading] = useState(false)
   const [error, setError] = useState(null)
   const [inputMethod, setInputMethod] = useState('route') // 'route' or 'flight'
   const [flightNumber, setFlightNumber] = useState('')
   const [flightDate, setFlightDate] = useState('')
+  const [editMode, setEditMode] = useState(false)
+  const [editPlanId, setEditPlanId] = useState(null)
   const [formData, setFormData] = useState({
     origin: '',
     originTimezone: '',
@@ -28,6 +31,35 @@ export const TripLanding = () => {
     flightNumber: '',
     seatClass: 'economy'
   })
+
+  useEffect(() => {
+    // Check if we're in edit mode
+    if (location.state?.editMode && location.state?.planData) {
+      setEditMode(true)
+      setEditPlanId(location.state.planId)
+      
+      // Pre-fill form with existing trip data
+      const tripData = location.state.planData
+      const departureDate = new Date(tripData.departure_utc)
+      const arrivalDate = new Date(tripData.arrival_utc)
+      
+      setFormData({
+        origin: tripData.origin || '',
+        originTimezone: tripData.origin_timezone || '',
+        destination: tripData.destination || '',
+        destinationTimezone: tripData.destination_timezone || '',
+        departureDate: departureDate.toISOString().split('T')[0],
+        departureTime: departureDate.toTimeString().slice(0, 5),
+        arrivalDate: arrivalDate.toISOString().split('T')[0],
+        arrivalTime: arrivalDate.toTimeString().slice(0, 5),
+        flightDuration: tripData.flight_duration_minutes ? Math.floor(tripData.flight_duration_minutes / 60) : '',
+        layovers: tripData.layovers || [],
+        airline: '',
+        flightNumber: '',
+        seatClass: 'economy'
+      })
+    }
+  }, [location.state])
 
   const handleFlightLookup = async () => {
     if (!flightNumber.trim()) {
@@ -157,10 +189,17 @@ export const TripLanding = () => {
         }
       }
 
-      const response = await apiClient.generatePlan(tripData)
-      
-      // Navigate to the trip using the trip_id from the response
-      navigate(`/trip/${response.trip_id}`)
+      if (editMode && editPlanId) {
+        // Update existing trip
+        await apiClient.updateTrip(editPlanId, tripData.trip)
+        // Navigate back to the updated trip
+        navigate(`/trip/${editPlanId}`)
+      } else {
+        // Create new trip
+        const response = await apiClient.generatePlan(tripData)
+        // Navigate to the trip using the trip_id from the response
+        navigate(`/trip/${response.trip_id}`)
+      }
     } catch (err) {
       setError(err.message)
     } finally {
@@ -190,8 +229,13 @@ export const TripLanding = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Plan Your Trip & Beat Jet Lag
+            {editMode ? 'Edit Your Trip Plan' : 'Plan Your Trip & Beat Jet Lag'}
           </h2>
+          {editMode && (
+            <p className="mb-4 text-sm text-gray-600">
+              Update your trip details below. Changes will overwrite your existing plan.
+            </p>
+          )}
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Enter your flight details and get a personalized circadian plan to prevent or minimize jet lag.
           </p>
@@ -605,7 +649,7 @@ export const TripLanding = () => {
                 </>
               ) : (
                 <>
-                  Generate My Jet Lag Plan
+                  {editMode ? 'Update My Trip Plan' : 'Generate My Jet Lag Plan'}
                   <svg className="ml-2 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>

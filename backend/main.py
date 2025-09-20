@@ -8,7 +8,7 @@ from models import *
 from services.supabase_service import SupabaseService
 from services.gemini_service import GeminiService
 from services.weather_service import WeatherService
-from routes import trips, plans, checklist, weather
+from routes import trips, plans, checklist, weather, shift_work, sleep_schedule
 
 # Load environment variables
 load_dotenv()
@@ -38,6 +38,8 @@ app.include_router(trips.router, prefix="/api/v1", tags=["trips"])
 app.include_router(plans.router, prefix="/api/v1", tags=["plans"])
 app.include_router(checklist.router, prefix="/api/v1", tags=["checklist"])
 app.include_router(weather.router, prefix="/api/v1", tags=["weather"])
+app.include_router(shift_work.router, tags=["shift-work"])
+app.include_router(sleep_schedule.router, tags=["sleep-schedule"])
 
 @app.get("/api/v1/health")
 async def health_check():

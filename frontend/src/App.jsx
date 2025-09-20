@@ -9,7 +9,9 @@ import { TripPlanner } from './pages/TripPlanner'
 import { TripView } from './pages/TripView'
 import { TripHistory } from './pages/TripHistory'
 import { ShiftWorkLanding } from './pages/ShiftWorkLanding'
+import { ShiftWorkPlanView } from './pages/ShiftWorkPlanView'
 import { SleepScheduleLanding } from './pages/SleepScheduleLanding'
+import { SleepSchedulePlanView } from './pages/SleepSchedulePlanView'
 import { Profile } from './pages/Profile'
 import { Legal } from './pages/Legal'
 
@@ -28,7 +30,9 @@ function App() {
             <Route path="/trips" element={<TripHistory />} />
             <Route path="/schedules" element={<TripHistory />} />
             <Route path="/shift-work" element={<ShiftWorkLanding />} />
+            <Route path="/shift-work/plan/:id" element={<ShiftWorkPlanView />} />
             <Route path="/sleep-schedule" element={<SleepScheduleLanding />} />
+            <Route path="/sleep-schedule/plan/:id" element={<SleepSchedulePlanView />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/legal" element={<Legal />} />
           </Routes>

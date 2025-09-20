@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from typing import Dict, Any
 from models.schedule_models import GeneratePlanRequest, ScheduleResponse
 from services.supabase_service import SupabaseService
 from services.gemini_service import GeminiService
@@ -7,6 +8,22 @@ import json
 from datetime import datetime
 
 router = APIRouter()
+
+# Dependency to get SupabaseService instance
+def get_supabase_service():
+    return SupabaseService()
+
+@router.get("/plans/all", response_model=Dict[str, Any])
+async def get_all_user_plans(
+    user_id: str,
+    supabase: SupabaseService = Depends(get_supabase_service)
+):
+    """Get all plans (trips, shift work, sleep schedule) for a user"""
+    try:
+        plans = await supabase.get_user_all_plans(user_id)
+        return plans
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/generate-plan", response_model=ScheduleResponse)
 async def generate_plan(request: GeneratePlanRequest):

@@ -21,7 +21,8 @@ export const ScheduleTimeline = ({ schedule }) => {
       hydrate: '💧',
       melatonin: '💊',
       caffeine: '☕',
-      activity: '🏃'
+      activity: '🏃',
+      repeat: '🔄'
     }
     return icons[type] || '📋'
   }
@@ -36,7 +37,8 @@ export const ScheduleTimeline = ({ schedule }) => {
       hydrate: 'bg-cyan-100 text-cyan-800',
       melatonin: 'bg-red-100 text-red-800',
       caffeine: 'bg-orange-100 text-orange-800',
-      activity: 'bg-pink-100 text-pink-800'
+      activity: 'bg-pink-100 text-pink-800',
+      repeat: 'bg-gray-100 text-gray-800'
     }
     return colors[type] || 'bg-gray-100 text-gray-800'
   }
