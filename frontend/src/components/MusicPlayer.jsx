@@ -8,31 +8,94 @@ export const MusicPlayer = () => {
   const audioRef = useRef(null)
 
   const tracks = [
-    { id: 'rain', name: 'Rain Sounds', emoji: '🌧️' },
-    { id: 'ocean', name: 'Ocean Waves', emoji: '🌊' },
-    { id: 'forest', name: 'Forest Sounds', emoji: '🌲' },
-    { id: 'white-noise', name: 'White Noise', emoji: '⚪' }
+    { 
+      id: 'rain', 
+      name: 'Rain Sounds', 
+      emoji: '🌧️',
+      url: 'https://www.soundjay.com/misc/sounds/rain-01.mp3' // Free rain sound
+    },
+    { 
+      id: 'ocean', 
+      name: 'Ocean Waves', 
+      emoji: '🌊',
+      url: 'https://www.soundjay.com/misc/sounds/ocean-waves-01.mp3' // Free ocean sound
+    },
+    { 
+      id: 'forest', 
+      name: 'Forest Sounds', 
+      emoji: '🌲',
+      url: 'https://www.soundjay.com/misc/sounds/forest-01.mp3' // Free forest sound
+    },
+    { 
+      id: 'white-noise', 
+      name: 'White Noise', 
+      emoji: '⚪',
+      url: 'https://www.soundjay.com/misc/sounds/white-noise-01.mp3' // Free white noise
+    }
   ]
 
-  const playTrack = (track) => {
-    if (currentTrack === track.id) {
-      if (isPlaying) {
-        audioRef.current?.pause()
-        setIsPlaying(false)
+  const playTrack = async (track) => {
+    try {
+      if (currentTrack === track.id) {
+        if (isPlaying) {
+          audioRef.current?.pause()
+          setIsPlaying(false)
+        } else {
+          await audioRef.current?.play()
+          setIsPlaying(true)
+        }
       } else {
-        audioRef.current?.play()
-        setIsPlaying(true)
+        setCurrentTrack(track.id)
+        if (audioRef.current) {
+          audioRef.current.src = track.url
+          audioRef.current.volume = volume
+          await audioRef.current.play()
+          setIsPlaying(true)
+        }
       }
-    } else {
-      setCurrentTrack(track.id)
-      setIsPlaying(true)
-      // In a real app, you would load the actual audio file here
-      // For now, we'll just simulate it
+    } catch (error) {
+      console.error('Error playing audio:', error)
+      // Fallback to Web Audio API for ambient sounds
+      playGeneratedSound(track.id)
     }
   }
 
+  const playGeneratedSound = (trackId) => {
+    // Generate simple ambient sounds using Web Audio API
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)()
+    const oscillator = audioContext.createOscillator()
+    const gainNode = audioContext.createGain()
+    
+    oscillator.connect(gainNode)
+    gainNode.connect(audioContext.destination)
+    
+    // Different frequencies for different sounds
+    const frequencies = {
+      'rain': 200,
+      'ocean': 150,
+      'forest': 300,
+      'white-noise': 100
+    }
+    
+    oscillator.frequency.setValueAtTime(frequencies[trackId] || 200, audioContext.currentTime)
+    oscillator.type = 'sine'
+    gainNode.gain.setValueAtTime(volume * 0.1, audioContext.currentTime)
+    
+    oscillator.start()
+    setIsPlaying(true)
+    
+    // Store reference to stop later
+    audioRef.current = { stop: () => oscillator.stop() }
+  }
+
   const stopPlayback = () => {
-    audioRef.current?.pause()
+    if (audioRef.current) {
+      if (audioRef.current.pause) {
+        audioRef.current.pause()
+      } else if (audioRef.current.stop) {
+        audioRef.current.stop()
+      }
+    }
     setIsPlaying(false)
     setCurrentTrack(null)
   }
@@ -40,7 +103,7 @@ export const MusicPlayer = () => {
   const handleVolumeChange = (e) => {
     const newVolume = parseFloat(e.target.value)
     setVolume(newVolume)
-    if (audioRef.current) {
+    if (audioRef.current && audioRef.current.volume !== undefined) {
       audioRef.current.volume = newVolume
     }
   }
@@ -187,9 +250,12 @@ export const MusicPlayer = () => {
       <audio
         ref={audioRef}
         onEnded={() => setIsPlaying(false)}
-        onError={() => {
-          console.log('Audio playback not available in demo mode')
-          setIsPlaying(false)
+        onError={(e) => {
+          console.log('Audio file failed to load, using generated sound')
+          // Fallback to generated sound
+          if (currentTrack) {
+            playGeneratedSound(currentTrack)
+          }
         }}
       />
     </div>

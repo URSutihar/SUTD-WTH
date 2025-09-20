@@ -12,9 +12,14 @@ export const TripHistory = () => {
   useEffect(() => {
     const fetchTrips = async () => {
       try {
-        const tripsData = await apiClient.getTrips(user.id)
-        setTrips(tripsData)
+        setLoading(true)
+        setError(null)
+        const response = await apiClient.getTrips(user.id)
+        console.log('Trips response:', response) // Debug log
+        // The API returns { trips: [...], total: number }
+        setTrips(response.trips || [])
       } catch (err) {
+        console.error('Error fetching trips:', err) // Debug log
         setError(err.message)
       } finally {
         setLoading(false)
@@ -68,7 +73,7 @@ export const TripHistory = () => {
         </Link>
       </div>
 
-      {trips.length === 0 ? (
+      {!trips || trips.length === 0 ? (
         <div className="text-center py-12">
           <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -86,7 +91,7 @@ export const TripHistory = () => {
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {trips.map((trip) => (
+          {trips && trips.map((trip) => (
             <div key={trip.id} className="bg-white shadow rounded-lg overflow-hidden">
               <div className="p-6">
                 <div className="flex items-center justify-between">
