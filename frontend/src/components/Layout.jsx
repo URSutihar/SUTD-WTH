@@ -1,11 +1,17 @@
 import { useAuth } from '../contexts/AuthContext'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, Navigate } from 'react-router-dom'
 
 export const Layout = ({ children }) => {
   const { user, loading, signOut } = useAuth()
   const location = useLocation()
 
   const isLoginPage = location.pathname === '/login'
+  const isWelcomePage = location.pathname === '/welcome'
+
+  // Redirect authenticated users from home to welcome page
+  if (user && location.pathname === '/') {
+    return <Navigate to="/welcome" replace />
+  }
 
   if (loading) {
     return (
@@ -15,7 +21,7 @@ export const Layout = ({ children }) => {
     )
   }
 
-  if (isLoginPage) {
+  if (isLoginPage || isWelcomePage) {
     return <>{children}</>
   }
 
@@ -78,12 +84,12 @@ export const Layout = ({ children }) => {
                 <Link
                   to="/trips"
                   className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                    location.pathname === '/trips' 
+                    location.pathname === '/trips' || location.pathname === '/schedules'
                       ? 'border-jetlag-500 text-gray-900' 
                       : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
                   }`}
                 >
-                  My Trips
+                  My Schedules
                 </Link>
               </div>
             </div>

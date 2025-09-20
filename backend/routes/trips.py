@@ -2,8 +2,19 @@ from fastapi import APIRouter, HTTPException, Query
 from typing import List, Optional
 from models.trip_models import TripCreate, TripResponse, TripListResponse
 from services.supabase_service import SupabaseService
+from services.flight_lookup_service import flight_lookup_service
 
 router = APIRouter()
+
+@router.get("/flight-lookup/{flight_number}")
+async def lookup_flight(flight_number: str, date: Optional[str] = Query(None, description="Flight date (YYYY-MM-DD)")):
+    """Look up flight information by flight number"""
+    try:
+        flight_info = await flight_lookup_service.lookup_flight(flight_number, date)
+        return flight_info
+        
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @router.post("/trips", response_model=TripResponse)
 async def create_trip(trip: TripCreate):

@@ -30,6 +30,15 @@ class ApiClient {
     }
   }
 
+  // Flight lookup
+  async lookupFlight(flightNumber, date = null) {
+    const params = new URLSearchParams()
+    if (date) params.append('date', date)
+    const queryString = params.toString()
+    const url = `/api/v1/flight-lookup/${flightNumber}${queryString ? `?${queryString}` : ''}`
+    return this.request(url)
+  }
+
   // Trip management
   async createTrip(tripData) {
     return this.request('/api/v1/trips', {
