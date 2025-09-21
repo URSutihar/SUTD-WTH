@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
+      "src": "backend/main.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/projects/sonrelags/api/(.*)",
+      "dest": "/backend/main.py"
+    },
+    {
+      "src": "/projects/sonrelags/(.*)",
+      "dest": "/frontend/$1"
+    },
+    {
+      "src": "/projects/sonrelags",
+      "dest": "/frontend/index.html"
+    }
+  ]
+}
