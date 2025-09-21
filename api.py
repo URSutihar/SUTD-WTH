@@ -38,6 +38,7 @@ async def generate_plan(plan_data: dict):
         # For now, return a mock response
         return {
             "success": True,
+            "trip_id": "mock-trip-123",
             "plan": {
                 "id": "mock-plan-123",
                 "title": "Mock Jet Lag Plan",
@@ -56,8 +57,58 @@ async def generate_plan(plan_data: dict):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating plan: {str(e)}")
 
+@app.post("/api/v1/shift-work/generate-plan")
+async def generate_shift_work_plan(plan_data: dict):
+    """Generate a shift work plan"""
+    try:
+        return {
+            "success": True,
+            "id": "mock-shift-plan-123",
+            "plan": {
+                "id": "mock-shift-plan-123",
+                "title": "Mock Shift Work Plan",
+                "description": "This is a mock shift work plan for testing",
+                "schedule": [
+                    {
+                        "day": 1,
+                        "activities": [
+                            {"time": "06:00", "activity": "Wake up", "description": "Early wake for shift"},
+                            {"time": "07:00", "activity": "Caffeine", "description": "Light caffeine intake"},
+                        ]
+                    }
+                ]
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating shift work plan: {str(e)}")
+
+@app.post("/api/v1/sleep-schedule/generate-plan")
+async def generate_sleep_schedule_plan(plan_data: dict):
+    """Generate a sleep schedule plan"""
+    try:
+        return {
+            "success": True,
+            "id": "mock-sleep-plan-123",
+            "plan": {
+                "id": "mock-sleep-plan-123",
+                "title": "Mock Sleep Schedule Plan",
+                "description": "This is a mock sleep schedule plan for testing",
+                "schedule": [
+                    {
+                        "day": 1,
+                        "activities": [
+                            {"time": "22:00", "activity": "Wind down", "description": "Start bedtime routine"},
+                            {"time": "23:00", "activity": "Sleep", "description": "Target bedtime"},
+                        ]
+                    }
+                ]
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating sleep schedule plan: {str(e)}")
+
 @app.get("/api/v1/trips")
-async def get_trips():
+async def get_trips(user_id: str = None):
     """Get user trips"""
     return {"trips": []}
 
@@ -76,6 +127,61 @@ async def create_trip(trip_data: dict):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error creating trip: {str(e)}")
+
+@app.get("/api/v1/trips/{trip_id}")
+async def get_trip(trip_id: str):
+    """Get a specific trip"""
+    return {
+        "id": trip_id,
+        "destination": "Mock Destination",
+        "departure_date": "2024-01-01",
+        "arrival_date": "2024-01-02",
+        "plan": {
+            "id": "mock-plan-123",
+            "schedule": []
+        }
+    }
+
+@app.get("/api/v1/plans/all")
+async def get_all_plans(user_id: str):
+    """Get all plans for a user"""
+    return {"plans": []}
+
+@app.get("/api/v1/shift-work/plans")
+async def get_shift_work_plans(user_id: str):
+    """Get shift work plans for a user"""
+    return {"plans": []}
+
+@app.get("/api/v1/sleep-schedule/plans")
+async def get_sleep_schedule_plans(user_id: str):
+    """Get sleep schedule plans for a user"""
+    return {"plans": []}
+
+@app.post("/api/v1/checklist/mark")
+async def mark_action_complete(action_data: dict):
+    """Mark an action as complete"""
+    return {"success": True, "action_id": action_data.get("action_id"), "completed": action_data.get("completed")}
+
+@app.get("/api/v1/weather")
+async def get_weather(lat: float = None, lon: float = None, q: str = None):
+    """Get weather information"""
+    return {
+        "temperature": 22,
+        "condition": "Sunny",
+        "humidity": 60,
+        "description": "Mock weather data"
+    }
+
+@app.get("/api/v1/flight-lookup/{flight_number}")
+async def lookup_flight(flight_number: str, date: str = None):
+    """Lookup flight information"""
+    return {
+        "flight_number": flight_number,
+        "airline": "Mock Airline",
+        "departure": "Mock Airport",
+        "arrival": "Mock Airport",
+        "status": "On Time"
+    }
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
