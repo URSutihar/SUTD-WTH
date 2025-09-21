@@ -13,39 +13,29 @@
       "use": "@vercel/python"
     }
   ],
-  "routes": [
-    {
-      "src": "/projects/sonrelags/api/(.*)",
-      "dest": "/backend/main.py"
-    },
-    {
-      "src": "/projects/sonrelags/(.*)",
-      "dest": "/frontend/$1"
-    },
-    {
-      "src": "/projects/sonrelags",
-      "dest": "/frontend/index.html"
-    },
-    {
-      "src": "/api/(.*)",
-      "dest": "/backend/main.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/frontend/$1"
-    },
-    {
-      "src": "/",
-      "dest": "/frontend/index.html"
-    }
-  ],
   "rewrites": [
     {
-      "source": "/projects/sonrelags/((?!api/).*)",
+      "source": "/projects/sonrelags/api/(.*)",
+      "destination": "/backend/main.py"
+    },
+    {
+      "source": "/projects/sonrelags/(.*)",
+      "destination": "/frontend/$1"
+    },
+    {
+      "source": "/projects/sonrelags",
       "destination": "/frontend/index.html"
     },
     {
-      "source": "/((?!api/).*)",
+      "source": "/api/(.*)",
+      "destination": "/backend/main.py"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/frontend/$1"
+    },
+    {
+      "source": "/",
       "destination": "/frontend/index.html"
     }
   ]
