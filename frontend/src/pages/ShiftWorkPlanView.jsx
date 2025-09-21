@@ -22,8 +22,11 @@ export const ShiftWorkPlanView = () => {
         setLoading(true)
         setError(null)
         
+        console.log('Fetching shift work plan with ID:', id) // Debug log
+        
         // Get the shift work plan
         const planData = await apiClient.getShiftWorkPlan(id)
+        console.log('Shift work plan data:', planData) // Debug log
         setPlan(planData)
         
         // Get the associated schedule

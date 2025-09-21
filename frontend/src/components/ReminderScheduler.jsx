@@ -81,7 +81,7 @@ export const ReminderScheduler = ({ schedule, tripId }) => {
           </svg>
         </div>
         <div class="ml-3">
-          <h3 class="text-sm font-medium">Jetlag Planner Reminder</h3>
+          <h3 class="text-sm font-medium">Snorelags Reminder</h3>
           <p class="mt-1 text-sm">${action.details}</p>
           <p class="mt-1 text-xs opacity-75">${action.type.replace('_', ' ').toUpperCase()}</p>
         </div>
@@ -114,9 +114,9 @@ export const ReminderScheduler = ({ schedule, tripId }) => {
     const icsContent = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
-      'PRODID:-//Jetlag Planner//EN',
+      'PRODID:-//Snorelags//EN',
       'BEGIN:VEVENT',
-      `UID:${action.action_id}@jetlagplanner.com`,
+      `UID:${action.action_id}@snorelags.com`,
       `DTSTART:${formatDate(startTime)}`,
       `DTEND:${formatDate(endTime)}`,
       `SUMMARY:${action.type.replace('_', ' ').toUpperCase()}: ${action.details}`,

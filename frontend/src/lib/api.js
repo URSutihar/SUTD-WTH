@@ -20,7 +20,38 @@ class ApiClient {
       
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.detail || `HTTP error! status: ${response.status}`)
+        console.error('API Error Response:', errorData)
+        
+        // Handle different error response formats
+        let errorMessage = `HTTP error! status: ${response.status}`
+        
+        if (errorData.detail) {
+          if (Array.isArray(errorData.detail)) {
+            errorMessage = errorData.detail.map(e => {
+              if (typeof e === 'object' && e !== null) {
+                return JSON.stringify(e)
+              }
+              return String(e)
+            }).join(', ')
+          } else {
+            errorMessage = String(errorData.detail)
+          }
+        } else if (errorData.message) {
+          errorMessage = String(errorData.message)
+        } else if (errorData.error) {
+          errorMessage = String(errorData.error)
+        } else if (Array.isArray(errorData)) {
+          errorMessage = errorData.map(e => {
+            if (typeof e === 'object' && e !== null) {
+              return JSON.stringify(e)
+            }
+            return String(e)
+          }).join(', ')
+        } else if (typeof errorData === 'object' && errorData !== null) {
+          errorMessage = JSON.stringify(errorData)
+        }
+        
+        throw new Error(errorMessage)
       }
 
       return await response.json()

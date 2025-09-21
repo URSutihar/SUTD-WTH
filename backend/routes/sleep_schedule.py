@@ -20,8 +20,13 @@ async def generate_sleep_schedule_plan(
 ):
     """Create a new sleep schedule plan and generate a plan."""
     try:
+        # Use demo user ID if not provided
+        plan_data = request.dict()
+        if not plan_data.get('user_id'):
+            plan_data['user_id'] = '00000000-0000-0000-0000-000000000001'  # Valid UUID format
+        
         # Create the sleep schedule plan in the database
-        created_plan = await supabase.create_sleep_schedule_plan(request.dict())
+        created_plan = await supabase.create_sleep_schedule_plan(plan_data)
         if not created_plan:
             raise HTTPException(status_code=500, detail="Failed to create sleep schedule plan")
 
@@ -34,11 +39,11 @@ async def generate_sleep_schedule_plan(
             
             # Prepare user data (similar to trip plans)
             user_data = {
-                "id": request.user_id,
-                "chronotype": request.preferences.chronotype,
+                "id": plan_data['user_id'],
+                "chronotype": request.preferences.get('chronotype', 'intermediate'),
                 "sleep_baseline": {
-                    "bedtime": request.current_schedule.bedtime,
-                    "waketime": request.current_schedule.waketime,
+                    "bedtime": request.current_schedule.get('bedtime', '23:00'),
+                    "waketime": request.current_schedule.get('waketime', '07:00'),
                     "typical_duration_minutes": 480  # Default 8 hours
                 }
             }
@@ -46,10 +51,10 @@ async def generate_sleep_schedule_plan(
             # Prepare sleep schedule data
             sleep_schedule_data = {
                 "id": plan_id,
-                "current_schedule": request.current_schedule.dict(),
-                "desired_schedule": request.desired_schedule.dict(),
-                "sleep_issues": request.sleep_issues.dict(),
-                "preferences": request.preferences.dict()
+                "current_schedule": request.current_schedule,
+                "desired_schedule": request.desired_schedule,
+                "sleep_issues": request.sleep_issues,
+                "preferences": request.preferences
             }
             
             # Generate the AI plan

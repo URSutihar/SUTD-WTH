@@ -6,7 +6,6 @@ export const Layout = ({ children }) => {
   const location = useLocation()
 
   const isLoginPage = location.pathname === '/login'
-  const isWelcomePage = location.pathname === '/welcome'
 
   // Redirect authenticated users from home to welcome page
   if (user && location.pathname === '/') {
@@ -21,7 +20,7 @@ export const Layout = ({ children }) => {
     )
   }
 
-  if (isLoginPage || isWelcomePage) {
+  if (isLoginPage) {
     return <>{children}</>
   }
 
@@ -31,7 +30,7 @@ export const Layout = ({ children }) => {
         <div className="max-w-md w-full space-y-8 p-8">
           <div className="text-center">
             <h2 className="mt-6 text-3xl font-bold text-gray-900">
-              Welcome to Jetlag Planner
+              Welcome to Snorelags
             </h2>
             <p className="mt-2 text-sm text-gray-600">
               Please sign in to continue
@@ -58,54 +57,40 @@ export const Layout = ({ children }) => {
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <Link to="/" className="flex-shrink-0 flex items-center">
-                <h1 className="text-xl font-bold text-jetlag-600">Jetlag Planner</h1>
+                <h1 className="text-xl font-bold text-jetlag-600">Snorelags</h1>
               </Link>
-              <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                <Link
-                  to="/"
-                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                    location.pathname === '/' 
-                      ? 'border-jetlag-500 text-gray-900' 
-                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
-                  }`}
-                >
-                  Home
-                </Link>
-                <Link
-                  to="/trip/plan"
-                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                    location.pathname === '/trip/plan' 
-                      ? 'border-jetlag-500 text-gray-900' 
-                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
-                  }`}
-                >
-                  Plan Trip
-                </Link>
-                <Link
-                  to="/trips"
-                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                    location.pathname === '/trips' || location.pathname === '/schedules'
-                      ? 'border-jetlag-500 text-gray-900' 
-                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
-                  }`}
-                >
-                  My Schedules
-                </Link>
-              </div>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-8">
+              <Link
+                to="/welcome"
+                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                  location.pathname === '/welcome' 
+                    ? 'border-jetlag-500 text-gray-900' 
+                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                }`}
+              >
+                Home
+              </Link>
+              <Link
+                to="/trips"
+                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                  location.pathname === '/trips' || location.pathname === '/schedules'
+                    ? 'border-jetlag-500 text-gray-900' 
+                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                }`}
+              >
+                My Schedules
+              </Link>
               <Link
                 to="/profile"
-                className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
+                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                  location.pathname === '/profile' 
+                    ? 'border-jetlag-500 text-gray-900' 
+                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                }`}
               >
-                Profile
+                My Profile
               </Link>
-              <button
-                onClick={signOut}
-                className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Sign Out
-              </button>
             </div>
           </div>
         </div>

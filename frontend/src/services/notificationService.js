@@ -67,7 +67,7 @@ class NotificationService {
     }
 
     const icon = this.getActionIcon(action.type)
-    const title = `${icon} Jetlag Planner Reminder`
+    const title = `${icon} Snorelags Reminder`
     const body = `${action.details}\n\nPlan: ${planTitle} (${planType})`
     
     const notification = new Notification(title, {

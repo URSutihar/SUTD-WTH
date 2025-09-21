@@ -40,12 +40,12 @@ export const Legal = () => {
         <div className="prose prose-sm max-w-none">
           <h3>1. Acceptance of Terms</h3>
           <p>
-            By using Jetlag Planner, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the application.
+            By using Snorelags, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the application.
           </p>
 
           <h3>2. Use of the Application</h3>
           <p>
-            Jetlag Planner is designed to provide general guidance for managing jet lag and circadian rhythm adjustments. The application is not intended to diagnose, treat, cure, or prevent any medical condition.
+            Snorelags is designed to provide general guidance for managing jet lag and circadian rhythm adjustments. The application is not intended to diagnose, treat, cure, or prevent any medical condition.
           </p>
 
           <h3>3. Medical Advice</h3>
@@ -63,7 +63,7 @@ export const Legal = () => {
 
           <h3>5. Limitation of Liability</h3>
           <p>
-            Jetlag Planner and its developers shall not be liable for any direct, indirect, incidental, special, or consequential damages resulting from the use or inability to use the application.
+            Snorelags and its developers shall not be liable for any direct, indirect, incidental, special, or consequential damages resulting from the use or inability to use the application.
           </p>
 
           <h3>6. Privacy</h3>
@@ -126,7 +126,7 @@ export const Legal = () => {
         </p>
         <div className="mt-4">
           <p className="text-sm text-gray-500">
-            Email: support@jetlagplanner.com<br />
+            Email: support@snorelags.com<br />
             Last updated: {new Date().toLocaleDateString()}
           </p>
         </div>

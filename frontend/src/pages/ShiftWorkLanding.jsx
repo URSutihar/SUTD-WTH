@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { apiClient } from '../lib/api'
+import { HourMinuteSelect } from '../components/HourMinuteSelect'
 
 export const ShiftWorkLanding = () => {
   const { user } = useAuth()
@@ -63,14 +64,10 @@ export const ShiftWorkLanding = () => {
     try {
       // Prepare shift work data for plan generation
       const shiftWorkData = {
-        user: {
-          id: user.id,
-          email: user.email,
-          chronotype: 'intermediate', // This should come from user profile
-        },
-        currentSchedule: formData.currentSleepSchedule,
-        desiredSchedule: formData.desiredSleepSchedule,
-        shiftDetails: formData.shiftDetails,
+        user_id: user.id, // Include user ID to prevent UUID error
+        current_schedule: formData.currentSleepSchedule,
+        desired_schedule: formData.desiredSleepSchedule,
+        shift_details: formData.shiftDetails,
         preferences: {
           max_caffeine_mg: 200,
           melatonin_preference_mg: 1,
@@ -78,40 +75,57 @@ export const ShiftWorkLanding = () => {
         }
       }
 
-      // For now, we'll navigate to a placeholder page
-      // Later this can be integrated with a shift work plan generation API
-      navigate('/shift-work/plan')
+      // Generate the shift work plan
+      const response = await apiClient.generateShiftWorkPlan(shiftWorkData)
+      console.log('Shift work plan response:', response) // Debug log
+      
+      // Navigate to the generated plan
+      navigate(`/shift-work/plan/${response.id}`)
       
     } catch (err) {
-      setError(err.message)
+      console.error('Shift work plan generation error:', err)
+      console.error('Error type:', typeof err)
+      console.error('Error constructor:', err.constructor.name)
+      console.error('Error keys:', Object.keys(err))
+      
+      // Handle different types of error responses
+      let errorMessage = 'Failed to generate shift work plan'
+      
+      if (err.message) {
+        errorMessage = err.message
+      } else if (Array.isArray(err)) {
+        errorMessage = err.map(e => {
+          if (typeof e === 'object' && e !== null) {
+            return JSON.stringify(e)
+          }
+          return e.toString()
+        }).join(', ')
+      } else if (typeof err === 'object' && err !== null) {
+        // Try to extract meaningful information from the error object
+        if (err.detail) {
+          errorMessage = err.detail
+        } else if (err.error) {
+          errorMessage = err.error
+        } else if (err.errors) {
+          errorMessage = Array.isArray(err.errors) ? err.errors.join(', ') : err.errors
+        } else {
+          errorMessage = JSON.stringify(err)
+        }
+      } else {
+        errorMessage = String(err)
+      }
+      
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link to="/welcome" className="flex items-center space-x-2 text-gray-600 hover:text-jetlag-600">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              <span>Back</span>
-            </Link>
-            <h1 className="text-xl font-bold text-jetlag-600">Shift Work Planning</h1>
-            <div></div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Optimize Your Shift Work Schedule
+            Working On Shifts? Fix Your Sleep Now
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Tell us about your current and desired sleep schedule to get personalized recommendations for shift work adaptation.
@@ -134,8 +148,8 @@ export const ShiftWorkLanding = () => {
                   <label htmlFor="currentBedtime" className="block text-sm font-medium text-gray-700 mb-2">
                     Bedtime
                   </label>
-                  <input
-                    type="time"
+                  <HourMinuteSelect
+                    name="currentBedtime"
                     id="currentBedtime"
                     value={formData.currentSleepSchedule.bedtime}
                     onChange={(e) => {
@@ -143,7 +157,6 @@ export const ShiftWorkLanding = () => {
                       const duration = calculateSleepDuration(e.target.value, formData.currentSleepSchedule.waketime)
                       handleInputChange('currentSleepSchedule', 'sleepDuration', duration)
                     }}
-                    className="input-field"
                     required
                   />
                 </div>
@@ -152,8 +165,8 @@ export const ShiftWorkLanding = () => {
                   <label htmlFor="currentWaketime" className="block text-sm font-medium text-gray-700 mb-2">
                     Wake Time
                   </label>
-                  <input
-                    type="time"
+                  <HourMinuteSelect
+                    name="currentWaketime"
                     id="currentWaketime"
                     value={formData.currentSleepSchedule.waketime}
                     onChange={(e) => {
@@ -161,7 +174,6 @@ export const ShiftWorkLanding = () => {
                       const duration = calculateSleepDuration(formData.currentSleepSchedule.bedtime, e.target.value)
                       handleInputChange('currentSleepSchedule', 'sleepDuration', duration)
                     }}
-                    className="input-field"
                     required
                   />
                 </div>
@@ -195,8 +207,8 @@ export const ShiftWorkLanding = () => {
                   <label htmlFor="desiredBedtime" className="block text-sm font-medium text-gray-700 mb-2">
                     Desired Bedtime
                   </label>
-                  <input
-                    type="time"
+                  <HourMinuteSelect
+                    name="desiredBedtime"
                     id="desiredBedtime"
                     value={formData.desiredSleepSchedule.bedtime}
                     onChange={(e) => {
@@ -204,7 +216,6 @@ export const ShiftWorkLanding = () => {
                       const duration = calculateSleepDuration(e.target.value, formData.desiredSleepSchedule.waketime)
                       handleInputChange('desiredSleepSchedule', 'sleepDuration', duration)
                     }}
-                    className="input-field"
                     required
                   />
                 </div>
@@ -213,8 +224,8 @@ export const ShiftWorkLanding = () => {
                   <label htmlFor="desiredWaketime" className="block text-sm font-medium text-gray-700 mb-2">
                     Desired Wake Time
                   </label>
-                  <input
-                    type="time"
+                  <HourMinuteSelect
+                    name="desiredWaketime"
                     id="desiredWaketime"
                     value={formData.desiredSleepSchedule.waketime}
                     onChange={(e) => {
@@ -222,7 +233,6 @@ export const ShiftWorkLanding = () => {
                       const duration = calculateSleepDuration(formData.desiredSleepSchedule.bedtime, e.target.value)
                       handleInputChange('desiredSleepSchedule', 'sleepDuration', duration)
                     }}
-                    className="input-field"
                     required
                   />
                 </div>
@@ -272,12 +282,11 @@ export const ShiftWorkLanding = () => {
                   <label htmlFor="workStartTime" className="block text-sm font-medium text-gray-700 mb-2">
                     Work Start Time
                   </label>
-                  <input
-                    type="time"
+                  <HourMinuteSelect
+                    name="workStartTime"
                     id="workStartTime"
                     value={formData.shiftDetails.workStartTime}
                     onChange={(e) => handleInputChange('shiftDetails', 'workStartTime', e.target.value)}
-                    className="input-field"
                   />
                 </div>
                 
@@ -285,12 +294,11 @@ export const ShiftWorkLanding = () => {
                   <label htmlFor="workEndTime" className="block text-sm font-medium text-gray-700 mb-2">
                     Work End Time
                   </label>
-                  <input
-                    type="time"
+                  <HourMinuteSelect
+                    name="workEndTime"
                     id="workEndTime"
                     value={formData.shiftDetails.workEndTime}
                     onChange={(e) => handleInputChange('shiftDetails', 'workEndTime', e.target.value)}
-                    className="input-field"
                   />
                 </div>
               </div>
@@ -347,7 +355,6 @@ export const ShiftWorkLanding = () => {
             )}
           </button>
         </div>
-      </div>
     </div>
   )
 }

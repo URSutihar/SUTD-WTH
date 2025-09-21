@@ -14,7 +14,7 @@ class ShiftDetails(BaseModel):
     workDays: List[str] = Field(default_factory=list, description="List of work days")
 
 class ShiftWorkPlanCreate(BaseModel):
-    user_id: str
+    user_id: Optional[str] = None
     current_schedule: Dict[str, Any]  # SleepSchedule as dict
     desired_schedule: Dict[str, Any]  # SleepSchedule as dict
     shift_details: Dict[str, Any]    # ShiftDetails as dict
@@ -48,7 +48,7 @@ class SleepPreferences(BaseModel):
     caffeineIntake: str = Field(default="moderate", description="none, light, moderate, or heavy")
 
 class SleepSchedulePlanCreate(BaseModel):
-    user_id: str
+    user_id: Optional[str] = None
     current_schedule: Dict[str, Any]  # SleepSchedule as dict
     desired_schedule: Dict[str, Any]  # SleepSchedule as dict
     sleep_issues: Dict[str, Any]      # SleepIssues as dict

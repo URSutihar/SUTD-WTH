@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 
 export const Profile = () => {
-  const { user } = useAuth()
+  const { user, signOut } = useAuth()
   const [profile, setProfile] = useState({
     chronotype: 'intermediate',
     melatonin_preference_mg: 1,

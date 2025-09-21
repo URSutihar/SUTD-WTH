@@ -22,8 +22,11 @@ export const SleepSchedulePlanView = () => {
         setLoading(true)
         setError(null)
         
+        console.log('Fetching sleep schedule plan with ID:', id) // Debug log
+        
         // Get the sleep schedule plan
         const planData = await apiClient.getSleepSchedulePlan(id)
+        console.log('Sleep schedule plan data:', planData) // Debug log
         setPlan(planData)
         
         // Get the associated schedule

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { apiClient } from '../lib/api'
+import { HourMinuteSelect } from '../components/HourMinuteSelect'
 
 export const SleepScheduleLanding = () => {
   const { user } = useAuth()
@@ -70,48 +71,44 @@ export const SleepScheduleLanding = () => {
     try {
       // Prepare sleep schedule data for plan generation
       const sleepScheduleData = {
-        user: {
-          id: user.id,
-          email: user.email,
-          chronotype: formData.preferences.chronotype,
-        },
-        currentSchedule: formData.currentSleepSchedule,
-        desiredSchedule: formData.desiredSleepSchedule,
-        sleepIssues: formData.sleepIssues,
+        user_id: user.id, // Include user ID to prevent UUID error
+        current_schedule: formData.currentSleepSchedule,
+        desired_schedule: formData.desiredSleepSchedule,
+        sleep_issues: formData.sleepIssues,
         preferences: formData.preferences
       }
 
-      // For now, we'll navigate to a placeholder page
-      // Later this can be integrated with a sleep schedule plan generation API
-      navigate('/sleep-schedule/plan')
+      // Generate the sleep schedule plan
+      const response = await apiClient.generateSleepSchedulePlan(sleepScheduleData)
+      console.log('Sleep schedule plan response:', response) // Debug log
+      
+      // Navigate to the generated plan
+      navigate(`/sleep-schedule/plan/${response.id}`)
       
     } catch (err) {
-      setError(err.message)
+      console.error('Sleep schedule plan generation error:', err)
+      
+      // Handle different types of error responses
+      let errorMessage = 'Failed to generate sleep schedule plan'
+      
+      if (err.message) {
+        errorMessage = err.message
+      } else if (Array.isArray(err)) {
+        errorMessage = err.map(e => e.message || e.toString()).join(', ')
+      } else if (typeof err === 'object' && err !== null) {
+        errorMessage = JSON.stringify(err)
+      } else {
+        errorMessage = err.toString()
+      }
+      
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link to="/welcome" className="flex items-center space-x-2 text-gray-600 hover:text-jetlag-600">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              <span>Back</span>
-            </Link>
-            <h1 className="text-xl font-bold text-jetlag-600">Sleep Schedule Fix</h1>
-            <div></div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
             Reset Your Sleep Schedule
@@ -137,8 +134,8 @@ export const SleepScheduleLanding = () => {
                   <label htmlFor="currentBedtime" className="block text-sm font-medium text-gray-700 mb-2">
                     Current Bedtime
                   </label>
-                  <input
-                    type="time"
+                  <HourMinuteSelect
+                    name="currentBedtime"
                     id="currentBedtime"
                     value={formData.currentSleepSchedule.bedtime}
                     onChange={(e) => {
@@ -146,7 +143,6 @@ export const SleepScheduleLanding = () => {
                       const duration = calculateSleepDuration(e.target.value, formData.currentSleepSchedule.waketime)
                       handleInputChange('currentSleepSchedule', 'sleepDuration', duration)
                     }}
-                    className="input-field"
                     required
                   />
                 </div>
@@ -155,8 +151,8 @@ export const SleepScheduleLanding = () => {
                   <label htmlFor="currentWaketime" className="block text-sm font-medium text-gray-700 mb-2">
                     Current Wake Time
                   </label>
-                  <input
-                    type="time"
+                  <HourMinuteSelect
+                    name="currentWaketime"
                     id="currentWaketime"
                     value={formData.currentSleepSchedule.waketime}
                     onChange={(e) => {
@@ -164,7 +160,6 @@ export const SleepScheduleLanding = () => {
                       const duration = calculateSleepDuration(formData.currentSleepSchedule.bedtime, e.target.value)
                       handleInputChange('currentSleepSchedule', 'sleepDuration', duration)
                     }}
-                    className="input-field"
                     required
                   />
                 </div>
@@ -198,8 +193,8 @@ export const SleepScheduleLanding = () => {
                   <label htmlFor="desiredBedtime" className="block text-sm font-medium text-gray-700 mb-2">
                     Desired Bedtime
                   </label>
-                  <input
-                    type="time"
+                  <HourMinuteSelect
+                    name="desiredBedtime"
                     id="desiredBedtime"
                     value={formData.desiredSleepSchedule.bedtime}
                     onChange={(e) => {
@@ -207,7 +202,6 @@ export const SleepScheduleLanding = () => {
                       const duration = calculateSleepDuration(e.target.value, formData.desiredSleepSchedule.waketime)
                       handleInputChange('desiredSleepSchedule', 'sleepDuration', duration)
                     }}
-                    className="input-field"
                     required
                   />
                 </div>
@@ -216,8 +210,8 @@ export const SleepScheduleLanding = () => {
                   <label htmlFor="desiredWaketime" className="block text-sm font-medium text-gray-700 mb-2">
                     Desired Wake Time
                   </label>
-                  <input
-                    type="time"
+                  <HourMinuteSelect
+                    name="desiredWaketime"
                     id="desiredWaketime"
                     value={formData.desiredSleepSchedule.waketime}
                     onChange={(e) => {
@@ -225,7 +219,6 @@ export const SleepScheduleLanding = () => {
                       const duration = calculateSleepDuration(formData.desiredSleepSchedule.bedtime, e.target.value)
                       handleInputChange('desiredSleepSchedule', 'sleepDuration', duration)
                     }}
-                    className="input-field"
                     required
                   />
                 </div>
@@ -388,7 +381,6 @@ export const SleepScheduleLanding = () => {
             )}
           </button>
         </div>
-      </div>
     </div>
   )
 }

@@ -5,20 +5,9 @@ export const Welcome = () => {
   const { user } = useAuth()
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Top Bar with App Name/Logo */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-jetlag-600">Jetlag Planner</h1>
-            </div>
-          </div>
-        </div>
-      </div>
-
+    <div className="space-y-8">
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8">
+      <div className="flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8">
         {/* Welcome Text */}
         <div className="text-center mb-12">
           <h2 className="text-3xl font-semibold text-gray-900 mb-2">
@@ -68,7 +57,7 @@ export const Welcome = () => {
                 </div>
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-medium text-gray-900">Going for shift work</h3>
+                <h3 className="text-lg font-medium text-gray-900">Going to/coming from shift work</h3>
                 <p className="text-sm text-gray-500">Adjust your schedule for work shifts</p>
               </div>
               <div className="flex-shrink-0">
@@ -92,7 +81,7 @@ export const Welcome = () => {
                 </div>
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-medium text-gray-900">I want to fix my sleep schedule</h3>
+                <h3 className="text-lg font-medium text-gray-900">Fix my sleep schedule (other reasons)</h3>
                 <p className="text-sm text-gray-500">Reset and optimize your sleep routine</p>
               </div>
               <div className="flex-shrink-0">
@@ -102,45 +91,6 @@ export const Welcome = () => {
               </div>
             </div>
           </Link>
-        </div>
-      </div>
-
-      {/* Bottom Bar */}
-      <div className="bg-white border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center h-16">
-            <div className="flex items-center space-x-8">
-              <Link
-                to="/schedule/new"
-                className="flex items-center space-x-2 text-gray-600 hover:text-jetlag-600 transition-colors duration-200"
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                <span className="text-sm font-medium">New Schedule</span>
-              </Link>
-              
-              <Link
-                to="/schedules"
-                className="flex items-center space-x-2 text-gray-600 hover:text-jetlag-600 transition-colors duration-200"
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-                <span className="text-sm font-medium">My Schedules</span>
-              </Link>
-              
-              <Link
-                to="/profile"
-                className="flex items-center space-x-2 text-gray-600 hover:text-jetlag-600 transition-colors duration-200"
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                <span className="text-sm font-medium">Profile</span>
-              </Link>
-            </div>
-          </div>
         </div>
       </div>
     </div>

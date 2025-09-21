@@ -283,30 +283,63 @@ export const TripHistory = () => {
       </div>
 
       {!plans || plans.length === 0 ? (
-        <div className="text-center py-12">
-          <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-          </svg>
-          <h3 className="mt-2 text-sm font-medium text-gray-900">No schedules yet</h3>
-          <p className="mt-1 text-sm text-gray-500">Get started by creating your first plan.</p>
-          <div className="mt-6 flex justify-center space-x-3">
+        <div className="text-center py-16">
+          <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+            <svg className="w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">No schedules yet</h3>
+          <p className="text-gray-600 mb-1 max-w-md mx-auto">
+            You haven't created any sleep schedules yet. Start by choosing the type of plan that fits your needs:
+          </p>
+          <div className="mt-8 space-y-4">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
+              <div className="flex items-center space-x-3">
+                <span className="text-2xl">✈️</span>
+                <div className="text-left">
+                  <h4 className="font-medium text-blue-900">Beat Jet Lag for Your Upcoming Trip</h4>
+                  <p className="text-sm text-blue-700">Get personalized recommendations for your travel</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 max-w-md mx-auto">
+              <div className="flex items-center space-x-3">
+                <span className="text-2xl">🕐</span>
+                <div className="text-left">
+                  <h4 className="font-medium text-purple-900">Going to/coming from shift work</h4>
+                  <p className="text-sm text-purple-700">Adjust your sleep schedule for work shifts</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 max-w-md mx-auto">
+              <div className="flex items-center space-x-3">
+                <span className="text-2xl">😴</span>
+                <div className="text-left">
+                  <h4 className="font-medium text-green-900">Fix my sleep schedule (other reasons)</h4>
+                  <p className="text-sm text-green-700">Improve your sleep habits and routine</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="mt-8 flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
             <Link
               to="/trip/plan"
-              className="btn-primary"
+              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-jetlag-600 hover:bg-jetlag-700 transition-colors"
             >
-              Plan Your First Trip
+              ✈️ Plan Your First Trip
             </Link>
             <Link
               to="/shift-work"
-              className="btn-secondary"
+              className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
             >
-              Shift Work Plan
+              🕐 Shift Work Plan
             </Link>
             <Link
               to="/sleep-schedule"
-              className="btn-secondary"
+              className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
             >
-              Sleep Schedule Plan
+              😴 Sleep Schedule Plan
             </Link>
           </div>
         </div>
