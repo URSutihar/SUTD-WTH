@@ -1,0 +1,14 @@
+{
+  "redirects": [
+    {
+      "source": "/projects/sonrelags",
+      "destination": "https://jetlag-planner.vercel.app",
+      "permanent": false
+    },
+    {
+      "source": "/projects/sonrelags/(.*)",
+      "destination": "https://jetlag-planner.vercel.app/$1",
+      "permanent": false
+    }
+  ]
+}

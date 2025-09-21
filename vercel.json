@@ -9,33 +9,17 @@
       }
     },
     {
-      "src": "backend/main.py",
+      "src": "api.py",
       "use": "@vercel/python"
     }
   ],
   "rewrites": [
     {
-      "source": "/projects/sonrelags/api/(.*)",
-      "destination": "/backend/main.py"
-    },
-    {
-      "source": "/projects/sonrelags/(.*)",
-      "destination": "/frontend/$1"
-    },
-    {
-      "source": "/projects/sonrelags",
-      "destination": "/frontend/index.html"
-    },
-    {
       "source": "/api/(.*)",
-      "destination": "/backend/main.py"
+      "destination": "/api.py"
     },
     {
-      "source": "/(.*)",
-      "destination": "/frontend/$1"
-    },
-    {
-      "source": "/",
+      "source": "/((?!api/).*)",
       "destination": "/frontend/index.html"
     }
   ]
