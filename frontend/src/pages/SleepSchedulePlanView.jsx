@@ -29,29 +29,10 @@ export const SleepSchedulePlanView = () => {
         console.log('Sleep schedule plan data:', planData) // Debug log
         setPlan(planData)
         
-        // Get the associated schedule
-        // TODO: Implement getScheduleByPlanId in API client
-        // For now, we'll use a placeholder
-        setSchedule({
-          schedule_version: "1.0",
-          plan_type: "sleep_schedule_adjustment",
-          plan_id: id,
-          timezone: "UTC",
-          phases: [
-            {
-              phase_name: "sleep_adjustment",
-              start_local: "2025-01-01T00:00:00Z",
-              end_local: "2025-01-01T23:59:59Z",
-              goal: "Adjust sleep schedule gradually",
-              actions: []
-            }
-          ],
-          disclaimer: "This is a placeholder schedule. AI integration pending.",
-          metadata: {
-            generated_at_utc: new Date().toISOString(),
-            model: "Placeholder"
-          }
-        })
+        // Use the schedule data from the backend
+        if (planData.schedule) {
+          setSchedule(planData.schedule)
+        }
         
       } catch (err) {
         console.error('Error fetching sleep schedule plan:', err)
@@ -116,32 +97,32 @@ export const SleepSchedulePlanView = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white shadow rounded-lg p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">😴 Sleep Schedule Plan</h1>
-            <p className="text-gray-600 mt-1">
+      <div className="bg-white shadow rounded-lg p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-4 sm:space-y-0">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">😴 Sleep Schedule Plan</h1>
+            <p className="text-sm sm:text-base text-gray-600 mt-1">
               Sleep Schedule Adjustment & Optimization
             </p>
           </div>
-          <Link to="/trips" className="btn-secondary">
+          <Link to="/trips" className="btn-secondary w-full sm:w-auto text-center min-h-[44px] flex items-center justify-center">
             Back to Schedules
           </Link>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className="font-medium text-gray-900 mb-2">Current Schedule</h3>
-            <p className="text-sm text-gray-600">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+            <h3 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">Current Schedule</h3>
+            <p className="text-xs sm:text-sm text-gray-600">
               Bedtime: {currentSchedule.bedtime || 'N/A'}<br/>
               Wake Time: {currentSchedule.waketime || 'N/A'}<br/>
               Duration: {currentSchedule.sleepDuration || 'N/A'}
             </p>
           </div>
           
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className="font-medium text-gray-900 mb-2">Desired Schedule</h3>
-            <p className="text-sm text-gray-600">
+          <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+            <h3 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">Desired Schedule</h3>
+            <p className="text-xs sm:text-sm text-gray-600">
               Bedtime: {desiredSchedule.bedtime || 'N/A'}<br/>
               Wake Time: {desiredSchedule.waketime || 'N/A'}<br/>
               Duration: {desiredSchedule.sleepDuration || 'N/A'}

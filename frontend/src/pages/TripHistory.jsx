@@ -13,6 +13,8 @@ export const TripHistory = () => {
   const [stats, setStats] = useState({})
   const [notificationStatus, setNotificationStatus] = useState({})
   const [notificationPermission, setNotificationPermission] = useState('default')
+  const [activeFilter, setActiveFilter] = useState('all') // 'all', 'trip', 'shift_work', 'sleep_schedule'
+  const [showCreateDropdown, setShowCreateDropdown] = useState(false)
 
   useEffect(() => {
     const fetchAllPlans = async () => {
@@ -49,6 +51,20 @@ export const TripHistory = () => {
     }
     checkNotificationStatus()
   }, [])
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showCreateDropdown && !event.target.closest('.relative')) {
+        setShowCreateDropdown(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showCreateDropdown])
 
   if (loading) {
     return (
@@ -119,6 +135,39 @@ export const TripHistory = () => {
       sleep_schedule: '😴'
     }
     return icons[type] || '📋'
+  }
+
+  // Filter plans based on active filter
+  const filteredPlans = plans.filter(plan => 
+    activeFilter === 'all' || plan.type === activeFilter
+  )
+
+  // Handle filter button clicks
+  const handleFilterChange = (filter) => {
+    setActiveFilter(filter)
+  }
+
+  // Handle create dropdown toggle
+  const toggleCreateDropdown = () => {
+    setShowCreateDropdown(!showCreateDropdown)
+  }
+
+  // Handle create plan navigation
+  const handleCreatePlan = (type) => {
+    setShowCreateDropdown(false)
+    switch (type) {
+      case 'trip':
+        navigate('/trip/plan')
+        break
+      case 'shift_work':
+        navigate('/shift-work')
+        break
+      case 'sleep_schedule':
+        navigate('/sleep-schedule')
+        break
+      default:
+        break
+    }
   }
 
   const handleNotificationToggle = async (planId, plan) => {
@@ -252,100 +301,195 @@ export const TripHistory = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">My Schedules</h1>
-          <p className="mt-1 text-sm text-gray-500">
+    <div className="space-y-4 sm:space-y-6 px-4 sm:px-6 lg:px-8">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 truncate">My Schedules</h1>
+          <p className="mt-1 text-xs sm:text-sm text-gray-500 break-words">
             {stats.total} total plans • {stats.trips} trips • {stats.shiftWork} shift work • {stats.sleepSchedule} sleep schedules
           </p>
         </div>
-        <div className="flex space-x-3">
-          <Link
-            to="/trip/plan"
-            className="btn-primary"
+        
+        {/* Create Dropdown */}
+        <div className="relative flex-shrink-0">
+          <button
+            onClick={toggleCreateDropdown}
+            className="btn-primary flex items-center justify-center space-x-2 w-full sm:w-auto min-h-[44px] px-4 py-2"
           >
-            Plan Trip
-          </Link>
-          <Link
-            to="/shift-work"
-            className="btn-secondary"
-          >
-            Shift Work
-          </Link>
-          <Link
-            to="/sleep-schedule"
-            className="btn-secondary"
-          >
-            Sleep Schedule
-          </Link>
+            <span>+</span>
+            <span className="hidden sm:inline">Create New</span>
+            <span className="sm:hidden">Create</span>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          
+          {showCreateDropdown && (
+            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border">
+              <div className="py-1">
+                <button
+                  onClick={() => handleCreatePlan('trip')}
+                  className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 min-h-[44px]"
+                >
+                  <span className="mr-3">✈️</span>
+                  Plan Trip
+                </button>
+                <button
+                  onClick={() => handleCreatePlan('shift_work')}
+                  className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 min-h-[44px]"
+                >
+                  <span className="mr-3">🕐</span>
+                  Shift Work Plan
+                </button>
+                <button
+                  onClick={() => handleCreatePlan('sleep_schedule')}
+                  className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 min-h-[44px]"
+                >
+                  <span className="mr-3">😴</span>
+                  Sleep Schedule Plan
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {!plans || plans.length === 0 ? (
-        <div className="text-center py-16">
-          <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
-            <svg className="w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      {/* Filter Buttons */}
+      <div className="flex flex-wrap gap-2">
+        <button
+          onClick={() => handleFilterChange('all')}
+          className={`px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors min-h-[44px] flex items-center ${
+            activeFilter === 'all'
+              ? 'bg-jetlag-600 text-white'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          }`}
+        >
+          All ({stats.total})
+        </button>
+        <button
+          onClick={() => handleFilterChange('trip')}
+          className={`px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors min-h-[44px] flex items-center ${
+            activeFilter === 'trip'
+              ? 'bg-blue-600 text-white'
+              : 'bg-blue-100 text-blue-800 hover:bg-blue-200'
+          }`}
+        >
+          <span className="mr-1">✈️</span>
+          <span className="hidden sm:inline">Trips</span>
+          <span className="sm:hidden">Trips</span>
+          <span className="ml-1">({stats.trips})</span>
+        </button>
+        <button
+          onClick={() => handleFilterChange('shift_work')}
+          className={`px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors min-h-[44px] flex items-center ${
+            activeFilter === 'shift_work'
+              ? 'bg-purple-600 text-white'
+              : 'bg-purple-100 text-purple-800 hover:bg-purple-200'
+          }`}
+        >
+          <span className="mr-1">🕐</span>
+          <span className="hidden sm:inline">Shift Work</span>
+          <span className="sm:hidden">Shift</span>
+          <span className="ml-1">({stats.shiftWork})</span>
+        </button>
+        <button
+          onClick={() => handleFilterChange('sleep_schedule')}
+          className={`px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors min-h-[44px] flex items-center ${
+            activeFilter === 'sleep_schedule'
+              ? 'bg-green-600 text-white'
+              : 'bg-green-100 text-green-800 hover:bg-green-200'
+          }`}
+        >
+          <span className="mr-1">😴</span>
+          <span className="hidden sm:inline">Sleep Schedule</span>
+          <span className="sm:hidden">Sleep</span>
+          <span className="ml-1">({stats.sleepSchedule})</span>
+        </button>
+      </div>
+
+      {!filteredPlans || filteredPlans.length === 0 ? (
+        <div className="text-center py-8 sm:py-16 px-4">
+          <div className="mx-auto w-16 h-16 sm:w-24 sm:h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4 sm:mb-6">
+            <svg className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
             </svg>
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">No schedules yet</h3>
-          <p className="text-gray-600 mb-1 max-w-md mx-auto">
-            You haven't created any sleep schedules yet. Start by choosing the type of plan that fits your needs:
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
+            {activeFilter === 'all' ? 'No schedules yet' : `No ${activeFilter.replace('_', ' ')} schedules`}
+          </h3>
+          <p className="text-sm sm:text-base text-gray-600 mb-1 max-w-md mx-auto px-4">
+            {activeFilter === 'all' 
+              ? "You haven't created any schedules yet. Start by choosing the type of plan that fits your needs:"
+              : `You haven't created any ${activeFilter.replace('_', ' ')} schedules yet. Create your first one below:`
+            }
           </p>
-          <div className="mt-8 space-y-4">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
+          <div className="mt-6 sm:mt-8 space-y-3 sm:space-y-4 max-w-md mx-auto px-4">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4">
               <div className="flex items-center space-x-3">
-                <span className="text-2xl">✈️</span>
+                <span className="text-xl sm:text-2xl">✈️</span>
                 <div className="text-left">
-                  <h4 className="font-medium text-blue-900">Beat Jet Lag for Your Upcoming Trip</h4>
-                  <p className="text-sm text-blue-700">Get personalized recommendations for your travel</p>
+                  <h4 className="font-medium text-blue-900 text-sm sm:text-base">Beat Jet Lag for Your Upcoming Trip</h4>
+                  <p className="text-xs sm:text-sm text-blue-700">Get personalized recommendations for your travel</p>
                 </div>
               </div>
             </div>
-            <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 max-w-md mx-auto">
+            <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 sm:p-4">
               <div className="flex items-center space-x-3">
-                <span className="text-2xl">🕐</span>
+                <span className="text-xl sm:text-2xl">🕐</span>
                 <div className="text-left">
-                  <h4 className="font-medium text-purple-900">Going to/coming from shift work</h4>
-                  <p className="text-sm text-purple-700">Adjust your sleep schedule for work shifts</p>
+                  <h4 className="font-medium text-purple-900 text-sm sm:text-base">Going to/coming from shift work</h4>
+                  <p className="text-xs sm:text-sm text-purple-700">Adjust your sleep schedule for work shifts</p>
                 </div>
               </div>
             </div>
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 max-w-md mx-auto">
+            <div className="bg-green-50 border border-green-200 rounded-lg p-3 sm:p-4">
               <div className="flex items-center space-x-3">
-                <span className="text-2xl">😴</span>
+                <span className="text-xl sm:text-2xl">😴</span>
                 <div className="text-left">
-                  <h4 className="font-medium text-green-900">Fix my sleep schedule (other reasons)</h4>
-                  <p className="text-sm text-green-700">Improve your sleep habits and routine</p>
+                  <h4 className="font-medium text-green-900 text-sm sm:text-base">Fix my sleep schedule (other reasons)</h4>
+                  <p className="text-xs sm:text-sm text-green-700">Improve your sleep habits and routine</p>
                 </div>
               </div>
             </div>
           </div>
-          <div className="mt-8 flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
-            <Link
-              to="/trip/plan"
-              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-jetlag-600 hover:bg-jetlag-700 transition-colors"
-            >
-              ✈️ Plan Your First Trip
-            </Link>
-            <Link
-              to="/shift-work"
-              className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
-            >
-              🕐 Shift Work Plan
-            </Link>
-            <Link
-              to="/sleep-schedule"
-              className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
-            >
-              😴 Sleep Schedule Plan
-            </Link>
+          <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4 px-4">
+            {activeFilter === 'all' ? (
+              <>
+                <button
+                  onClick={() => handleCreatePlan('trip')}
+                  className="inline-flex items-center justify-center px-4 sm:px-6 py-3 border border-transparent text-sm sm:text-base font-medium rounded-md text-white bg-jetlag-600 hover:bg-jetlag-700 transition-colors min-h-[44px]"
+                >
+                  ✈️ Plan Your First Trip
+                </button>
+                <button
+                  onClick={() => handleCreatePlan('shift_work')}
+                  className="inline-flex items-center justify-center px-4 sm:px-6 py-3 border border-gray-300 text-sm sm:text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors min-h-[44px]"
+                >
+                  🕐 Shift Work Plan
+                </button>
+                <button
+                  onClick={() => handleCreatePlan('sleep_schedule')}
+                  className="inline-flex items-center justify-center px-4 sm:px-6 py-3 border border-gray-300 text-sm sm:text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors min-h-[44px]"
+                >
+                  😴 Sleep Schedule Plan
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => handleCreatePlan(activeFilter)}
+                className="inline-flex items-center justify-center px-4 sm:px-6 py-3 border border-transparent text-sm sm:text-base font-medium rounded-md text-white bg-jetlag-600 hover:bg-jetlag-700 transition-colors min-h-[44px]"
+              >
+                {activeFilter === 'trip' && '✈️ Plan Your First Trip'}
+                {activeFilter === 'shift_work' && '🕐 Create Shift Work Plan'}
+                {activeFilter === 'sleep_schedule' && '😴 Create Sleep Schedule Plan'}
+              </button>
+            )}
           </div>
         </div>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {plans.map((plan) => {
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredPlans.map((plan) => {
             const typeBadge = getPlanTypeBadge(plan.type)
             const statusBadge = getStatusBadge(plan.status)
             const planRoute = getPlanRoute(plan)
@@ -353,40 +497,40 @@ export const TripHistory = () => {
 
             return (
               <div key={plan.id} className="bg-white shadow rounded-lg overflow-hidden">
-                <div className="p-6">
+                <div className="p-4 sm:p-6">
                   <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-lg">{planIcon}</span>
-                      <h3 className="text-lg font-medium text-gray-900">
+                    <div className="flex items-center space-x-2 min-w-0 flex-1">
+                      <span className="text-lg flex-shrink-0">{planIcon}</span>
+                      <h3 className="text-base sm:text-lg font-medium text-gray-900 truncate">
                         {plan.title}
                       </h3>
                     </div>
-                    <div className="flex flex-col space-y-1">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${typeBadge.bg} ${typeBadge.textColor}`}>
+                    <div className="flex flex-col space-y-1 flex-shrink-0 ml-2">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${typeBadge.bg} ${typeBadge.textColor}`}>
                         {typeBadge.text}
                       </span>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusBadge.bg} ${statusBadge.textColor}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${statusBadge.bg} ${statusBadge.textColor}`}>
                         {statusBadge.text}
                       </span>
                     </div>
                   </div>
                   
-                  <div className="mt-2 text-sm text-gray-500">
-                    <p className="font-medium">{plan.subtitle}</p>
+                  <div className="mt-2 text-xs sm:text-sm text-gray-500">
+                    <p className="font-medium truncate">{plan.subtitle}</p>
                     <p>Created: {new Date(plan.created_at).toLocaleDateString()}</p>
                   </div>
                   
                   <div className="mt-4 flex flex-col space-y-2">
-                    <div className="flex space-x-3">
+                    <div className="flex space-x-2 sm:space-x-3">
                       <Link
                         to={planRoute}
-                        className="flex-1 bg-jetlag-600 text-white text-center py-2 px-4 rounded-md text-sm font-medium hover:bg-jetlag-700"
+                        className="flex-1 bg-jetlag-600 text-white text-center py-2 px-3 sm:px-4 rounded-md text-xs sm:text-sm font-medium hover:bg-jetlag-700 min-h-[44px] flex items-center justify-center"
                       >
                         View Plan
                       </Link>
                       <button 
                         onClick={() => handleEditPlan(plan)}
-                        className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-md text-sm font-medium hover:bg-gray-300"
+                        className="flex-1 bg-gray-200 text-gray-800 py-2 px-3 sm:px-4 rounded-md text-xs sm:text-sm font-medium hover:bg-gray-300 min-h-[44px] flex items-center justify-center"
                       >
                         Edit
                       </button>
@@ -394,7 +538,7 @@ export const TripHistory = () => {
                     
                     <button
                       onClick={() => handleNotificationToggle(plan.id, plan)}
-                      className={`w-full py-2 px-4 rounded-md text-sm font-medium ${getNotificationButtonStyle(plan.id)}`}
+                      className={`w-full py-2 px-3 sm:px-4 rounded-md text-xs sm:text-sm font-medium min-h-[44px] flex items-center justify-center ${getNotificationButtonStyle(plan.id)}`}
                     >
                       🔔 {getNotificationButtonText(plan.id)}
                     </button>

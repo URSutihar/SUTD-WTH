@@ -204,71 +204,71 @@ export const TripLanding = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <div className="text-center mb-6 sm:mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
             {editMode ? 'Edit Your Trip Plan' : 'Beat Jet Lag for Your Upcoming Trip'}
           </h2>
           {editMode && (
-            <p className="mb-4 text-sm text-gray-600">
+            <p className="mb-3 sm:mb-4 text-sm text-gray-600 px-4">
               Update your trip details below. Changes will overwrite your existing plan.
             </p>
           )}
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-4">
             Enter your flight details and get a personalized circadian plan to prevent or minimize jet lag.
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-8">
           {/* Input Method Selection */}
-          <div className="mb-8">
-            <div className="flex items-center justify-center space-x-8">
+          <div className="mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-8">
               <button
                 type="button"
                 onClick={() => setInputMethod('route')}
-                className={`px-6 py-3 rounded-lg font-medium transition-colors duration-200 ${
+                className={`w-full sm:w-auto px-4 sm:px-6 py-3 rounded-lg font-medium transition-colors duration-200 min-h-[44px] flex items-center justify-center ${
                   inputMethod === 'route'
                     ? 'bg-jetlag-600 text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                <svg className="w-5 h-5 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                Route Information
+                <span className="text-sm sm:text-base">Route Information</span>
               </button>
               
-              <div className="text-gray-400 font-medium">OR</div>
+              <div className="text-gray-400 font-medium text-sm sm:text-base">OR</div>
               
               <button
                 type="button"
                 onClick={() => setInputMethod('flight')}
-                className={`px-6 py-3 rounded-lg font-medium transition-colors duration-200 ${
+                className={`w-full sm:w-auto px-4 sm:px-6 py-3 rounded-lg font-medium transition-colors duration-200 min-h-[44px] flex items-center justify-center ${
                   inputMethod === 'flight'
                     ? 'bg-jetlag-600 text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                <svg className="w-5 h-5 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                 </svg>
-                Enter Flight Number
+                <span className="text-sm sm:text-base">Enter Flight Number</span>
               </button>
             </div>
           </div>
 
           {/* Flight Number Lookup */}
           {inputMethod === 'flight' && (
-            <div className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-gray-50 rounded-lg border border-gray-200">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
                 Flight Number Lookup
               </h3>
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
                 Enter your flight number to automatically fill in trip details. <strong>Note:</strong> Flight lookup requires a paid AviationStack subscription. If unavailable, you can enter your details manually using the "Enter Route Details" option below.
               </p>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-3">
                 <div>
-                  <label htmlFor="flightNumberInput" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="flightNumberInput" className="block text-xs sm:text-sm font-medium text-gray-700">
                     Flight Number
                   </label>
                   <input
@@ -276,12 +276,12 @@ export const TripLanding = () => {
                     id="flightNumberInput"
                     value={flightNumber}
                     onChange={(e) => setFlightNumber(e.target.value)}
-                    className="mt-1 input-field"
+                    className="mt-1 input-field min-h-[44px]"
                     placeholder="e.g., SQ12, AA123"
                   />
                 </div>
                 <div>
-                  <label htmlFor="flightDateInput" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="flightDateInput" className="block text-xs sm:text-sm font-medium text-gray-700">
                     Flight Date (Optional)
                   </label>
                   <input
@@ -289,7 +289,7 @@ export const TripLanding = () => {
                     id="flightDateInput"
                     value={flightDate}
                     onChange={(e) => setFlightDate(e.target.value)}
-                    className="mt-1 input-field"
+                    className="mt-1 input-field min-h-[44px]"
                   />
                 </div>
                 <div className="flex items-end">
@@ -297,7 +297,7 @@ export const TripLanding = () => {
                     type="button"
                     onClick={handleFlightLookup}
                     disabled={lookupLoading || !flightNumber.trim()}
-                    className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] flex items-center justify-center"
                   >
                     {lookupLoading ? (
                       <>
@@ -305,36 +305,36 @@ export const TripLanding = () => {
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        Looking up...
+                        <span className="text-sm sm:text-base">Looking up...</span>
                       </>
                     ) : (
-                      'Lookup Flight'
+                      <span className="text-sm sm:text-base">Lookup Flight</span>
                     )}
                   </button>
                 </div>
               </div>
-              <p className="mt-2 text-sm text-gray-500">
+              <p className="mt-2 text-xs sm:text-sm text-gray-500">
                 Enter your flight number (e.g., SQ12, AA123) and we'll automatically fetch the flight details.
               </p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
             {/* Route Information Form - Only show when route method is selected */}
             {inputMethod === 'route' && (
               <>
                 {/* Route Information Section */}
-                <div className="border-b border-gray-200 pb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                    <svg className="w-5 h-5 text-jetlag-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="border-b border-gray-200 pb-4 sm:pb-6">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-jetlag-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     Route Information
                   </h3>
                   
                   {/* Origin */}
-                  <div className="mb-6">
-                    <label htmlFor="origin" className="block text-sm font-medium text-gray-700">
+                  <div className="mb-4 sm:mb-6">
+                    <label htmlFor="origin" className="block text-xs sm:text-sm font-medium text-gray-700">
                       Origin City
                     </label>
                     <CityAutocomplete
@@ -348,7 +348,7 @@ export const TripLanding = () => {
 
                   {/* Destination */}
                   <div>
-                    <label htmlFor="destination" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="destination" className="block text-xs sm:text-sm font-medium text-gray-700">
                       Destination City
                     </label>
                     <CityAutocomplete
@@ -362,18 +362,18 @@ export const TripLanding = () => {
                 </div>
 
                 {/* Schedule Information Section */}
-                <div className="border-b border-gray-200 pb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                    <svg className="w-5 h-5 text-jetlag-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="border-b border-gray-200 pb-4 sm:pb-6">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-jetlag-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     Schedule Information
                   </h3>
                   
                   {/* Departure */}
-                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 mb-6">
+                  <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 mb-4 sm:mb-6">
                     <div>
-                      <label htmlFor="departureDate" className="block text-sm font-medium text-gray-700">
+                      <label htmlFor="departureDate" className="block text-xs sm:text-sm font-medium text-gray-700">
                         Departure Date
                       </label>
                       <input
@@ -383,11 +383,11 @@ export const TripLanding = () => {
                         required
                         value={formData.departureDate}
                         onChange={handleInputChange}
-                        className="mt-1 input-field"
+                        className="mt-1 input-field min-h-[44px]"
                       />
                     </div>
                     <div>
-                      <label htmlFor="departureTime" className="block text-sm font-medium text-gray-700">
+                      <label htmlFor="departureTime" className="block text-xs sm:text-sm font-medium text-gray-700">
                         Departure Time (Local)
                       </label>
                       <HourMinuteSelect
@@ -458,25 +458,27 @@ export const TripLanding = () => {
         </div>
 
         {/* Generate Plan Button - Separate from form */}
-        <div className="flex justify-center pt-8">
+        <div className="flex justify-center pt-6 sm:pt-8">
           {(inputMethod === 'route' || (inputMethod === 'flight' && formData.origin && formData.destination)) && (
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-jetlag-600 hover:bg-jetlag-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+              className="inline-flex items-center px-6 sm:px-8 py-3 border border-transparent text-sm sm:text-base font-medium rounded-md text-white bg-jetlag-600 hover:bg-jetlag-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 min-h-[44px]"
             >
               {loading ? (
                 <>
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                  <svg className="animate-spin -ml-1 mr-2 sm:mr-3 h-4 w-4 sm:h-5 sm:w-5 text-white" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Generating Plan...
+                  <span className="text-sm sm:text-base">Generating Plan...</span>
                 </>
               ) : (
                 <>
-                  {editMode ? 'Update My Trip Plan' : 'Generate My Jet Lag Plan'}
-                  <svg className="ml-2 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <span className="text-sm sm:text-base">
+                    {editMode ? 'Update My Trip Plan' : 'Generate My Jet Lag Plan'}
+                  </span>
+                  <svg className="ml-2 w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </>

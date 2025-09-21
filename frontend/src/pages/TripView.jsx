@@ -43,7 +43,7 @@ export const TripView = () => {
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-md p-4">
+      <div className="bg-red-50 border border-red-200 rounded-md p-4 mx-4 sm:mx-0">
         <div className="flex">
           <div className="flex-shrink-0">
             <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
@@ -65,32 +65,32 @@ export const TripView = () => {
 
   if (!trip) {
     return (
-      <div className="text-center py-12">
-        <h3 className="text-lg font-medium text-gray-900">Trip not found</h3>
-        <p className="mt-2 text-gray-500">The trip you're looking for doesn't exist.</p>
+      <div className="text-center py-8 sm:py-12 px-4">
+        <h3 className="text-base sm:text-lg font-medium text-gray-900">Trip not found</h3>
+        <p className="mt-2 text-sm sm:text-base text-gray-500">The trip you're looking for doesn't exist.</p>
       </div>
     )
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Trip Header */}
-      <div className="bg-white shadow rounded-lg p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+      <div className="bg-white shadow rounded-lg p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">
               {trip.origin} → {trip.destination}
             </h1>
-            <p className="mt-1 text-gray-600">
+            <p className="mt-1 text-sm sm:text-base text-gray-600">
               Departure: {new Date(trip.departure_utc).toLocaleString()}
             </p>
-            <p className="text-gray-600">
+            <p className="text-sm sm:text-base text-gray-600">
               Arrival: {new Date(trip.arrival_utc).toLocaleString()}
             </p>
           </div>
-          <div className="text-right">
-            <div className="text-sm text-gray-500">Flight Duration</div>
-            <div className="text-lg font-semibold text-gray-900">
+          <div className="text-left sm:text-right flex-shrink-0">
+            <div className="text-xs sm:text-sm text-gray-500">Flight Duration</div>
+            <div className="text-base sm:text-lg font-semibold text-gray-900">
               {Math.floor(trip.flight_duration_minutes / 60)}h {trip.flight_duration_minutes % 60}m
             </div>
           </div>
