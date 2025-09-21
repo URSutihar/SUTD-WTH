@@ -15,12 +15,16 @@
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
+      "src": "/projects/sonrelags/api/(.*)",
       "dest": "/backend/main.py"
     },
     {
-      "src": "/(.*)",
+      "src": "/projects/sonrelags/(.*)",
       "dest": "/frontend/$1"
+    },
+    {
+      "src": "/projects/sonrelags",
+      "dest": "/frontend/index.html"
     }
   ]
 }
