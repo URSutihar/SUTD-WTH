@@ -152,10 +152,90 @@ async def get_shift_work_plans(user_id: str):
     """Get shift work plans for a user"""
     return {"plans": []}
 
+@app.get("/api/v1/shift-work/plans/{plan_id}")
+async def get_shift_work_plan(plan_id: str):
+    """Get a specific shift work plan"""
+    return {
+        "id": plan_id,
+        "title": "Mock Shift Work Plan",
+        "description": "This is a mock shift work plan for testing",
+        "current_schedule": {
+            "bedtime": "23:00",
+            "waketime": "07:00",
+            "sleepDuration": "8h 0m"
+        },
+        "desired_schedule": {
+            "bedtime": "22:00",
+            "waketime": "06:00",
+            "sleepDuration": "8h 0m"
+        },
+        "shift_details": {
+            "shiftType": "night",
+            "workStartTime": "22:00",
+            "workEndTime": "06:00"
+        },
+        "schedule": [
+            {
+                "day": 1,
+                "activities": [
+                    {"time": "06:00", "activity": "Wake up", "description": "Early wake for shift"},
+                    {"time": "07:00", "activity": "Caffeine", "description": "Light caffeine intake"},
+                    {"time": "22:00", "activity": "Start shift", "description": "Begin work"},
+                    {"time": "02:00", "activity": "Break", "description": "Take a break"},
+                    {"time": "06:00", "activity": "End shift", "description": "Finish work"},
+                    {"time": "07:00", "activity": "Sleep", "description": "Go to bed"}
+                ]
+            }
+        ]
+    }
+
 @app.get("/api/v1/sleep-schedule/plans")
 async def get_sleep_schedule_plans(user_id: str):
     """Get sleep schedule plans for a user"""
     return {"plans": []}
+
+@app.get("/api/v1/sleep-schedule/plans/{plan_id}")
+async def get_sleep_schedule_plan(plan_id: str):
+    """Get a specific sleep schedule plan"""
+    return {
+        "id": plan_id,
+        "title": "Mock Sleep Schedule Plan",
+        "description": "This is a mock sleep schedule plan for testing",
+        "current_schedule": {
+            "bedtime": "01:00",
+            "waketime": "09:00",
+            "sleepDuration": "8h 0m"
+        },
+        "desired_schedule": {
+            "bedtime": "23:00",
+            "waketime": "07:00",
+            "sleepDuration": "8h 0m"
+        },
+        "sleep_issues": {
+            "difficultyFallingAsleep": True,
+            "difficultyStayingAsleep": False,
+            "earlyMorningAwakening": False,
+            "irregularSchedule": True,
+            "jetLag": False,
+            "shiftWork": False
+        },
+        "preferences": {
+            "chronotype": "night_owl",
+            "lightSensitivity": "moderate",
+            "caffeineIntake": "moderate"
+        },
+        "schedule": [
+            {
+                "day": 1,
+                "activities": [
+                    {"time": "22:00", "activity": "Wind down", "description": "Start bedtime routine"},
+                    {"time": "23:00", "activity": "Sleep", "description": "Target bedtime"},
+                    {"time": "07:00", "activity": "Wake up", "description": "Target wake time"},
+                    {"time": "08:00", "activity": "Light exposure", "description": "Get bright light"}
+                ]
+            }
+        ]
+    }
 
 @app.post("/api/v1/checklist/mark")
 async def mark_action_complete(action_data: dict):
