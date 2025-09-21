@@ -15,16 +15,17 @@
   ],
   "routes": [
     {
-      "src": "/projects/sonrelags/api/(.*)",
+      "src": "/api/(.*)",
       "dest": "/backend/main.py"
     },
     {
-      "src": "/projects/sonrelags/(.*)",
+      "src": "/(.*)",
       "dest": "/frontend/$1"
-    },
-    {
-      "src": "/projects/sonrelags",
-      "dest": "/frontend/index.html"
     }
-  ]
+  ],
+  "functions": {
+    "backend/main.py": {
+      "maxDuration": 30
+    }
+  }
 }

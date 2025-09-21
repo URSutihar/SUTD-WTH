@@ -2,22 +2,22 @@
   "name": "Jetlag Planner",
   "short_name": "JetlagPlanner",
   "description": "Personalized circadian plans to prevent or fix jet lag",
-  "start_url": "/projects/sonrelags/",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#0ea5e9",
   "orientation": "portrait",
-  "scope": "/projects/sonrelags/",
+  "scope": "/",
   "id": "com.jetlagify.mobile",
   "icons": [
     {
-      "src": "/projects/sonrelags/icon-192x192.png",
+      "src": "/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/projects/sonrelags/icon-512x512.png",
+      "src": "/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
