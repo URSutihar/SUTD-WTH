@@ -10,7 +10,7 @@ from services.gemini_service import GeminiService
 from services.weather_service import WeatherService
 from routes import trips, plans, checklist, weather, shift_work, sleep_schedule
 
-# Load environment variables
+# Environment variables
 load_dotenv()
 
 app = FastAPI(
