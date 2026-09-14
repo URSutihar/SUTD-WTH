@@ -1,4 +1,4 @@
-# Jetlag Planner
+# Snorelags: Jetlag Planner
 
 A full-stack web app that turns chronobiology into a simple, personalized, step-by-step plan to prevent or fix jet lag (also supports shift work).
 
